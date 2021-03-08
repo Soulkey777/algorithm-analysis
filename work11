@@ -1,0 +1,86 @@
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+const int maxn=1005;
+int n,m;
+struct edge
+{
+    int s,e;
+    int len;
+};
+edge e[maxn];
+int a[maxn];
+vector <edge> ve; //记录纳入的边
+//初始化
+int init ()
+{
+    for (int i=1;i<=n;i++)
+        a[i]=i;
+}
+//查找父节点
+int finds(int re)
+{
+    if(re==a[re])
+        return re;
+    return a[re]=finds(a[re]);
+}
+//将两个集合联合
+bool unit (int x,int y)
+{
+    int temp1=finds(x);
+    int temp2=finds(y);
+    if(temp1!=temp2)
+    {
+         a[temp1]=temp2;
+         return true;
+    }
+    return false;
+}
+int compare (edge a,edge b)
+{
+    return a.len<b.len;
+}
+//krusal算法
+int kruskal ()
+{
+    //先进行排序
+    sort(e,e+m,compare);
+    int num=n;
+    int sum=0;
+    for (int i=0;i<m&&num>1;i++)
+    {
+        //判断是否在同一集合中,在同一集合就不再计入
+        if(unit(e[i].s,e[i].e))
+        {
+            ve.push_back(e[i]);
+            sum+=e[i].len;
+            num--;
+        }
+    }
+    if(num==1)
+        printf("最小生成树的权值和为%d\n",sum);
+    else
+        printf("不存在最小生成树\n");
+}
+//遍历纳入的边
+void traverse ()
+{
+    printf("纳入的边为：\n");
+    for (int i=0;i<ve.size();i++)
+        printf("%d<->%d 长度为%d\n",ve[i].s,ve[i].e,ve[i].len);
+}
+int main()
+{
+    scanf("%d%d",&n,&m);
+    init();
+    for (int i=0;i<m;i++)
+    {
+        scanf("%d%d%d",&e[i].s,&e[i].e,&e[i].len);
+    }
+    kruskal();
+    traverse ();
+    return 0;
+}
