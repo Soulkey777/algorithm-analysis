@@ -1,0 +1,65 @@
+#include <iostream>
+#include<cstdio>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+const int N = 100;
+const int maxx = 100;
+#define INF 1000001
+int ma[N][N];
+int dis[N];
+bool vis[N];
+int n, m, st, ed;
+void Dijk()
+{
+	for (int i = 0; i < n - 1; i++){
+		int minv = INF, k;  
+		for (int j = 0; j < n; j++){
+			if (minv > dis[j] && !vis[j]){
+				minv = dis[j];
+				k = j;
+			}
+		}
+		vis[k] = 1;
+		for (int h = 0; h < n; h++)
+			dis[h] = min(dis[h], dis[k] + ma[k][h]);
+	}	
+}
+
+//初始化矩阵
+void init(){
+    int u, v, vi;
+    for (int i = 0; i < maxx;i++)
+    {
+        for (int j = 0; j < maxx;j++){
+        if(i==j) ma[i][j] = 0;
+        else ma[i][j] = INF;
+        }
+    }
+}
+int main(void)
+{
+	int a, b, c;
+    cin >> n >> m;
+    // 初始化ma数
+    init();
+    for (int i = 0; i < m; i++)
+    {
+        cin >> a >> b >> c;
+        if (ma[a][b] > c)
+            ma[a][b] = ma[b][a] = c;
+		}
+		// 输入起点和终点 
+		cin >> st >> ed;
+		// 初始化dis数组
+		for (int i = 0; i < n; i++)
+			dis[i] = ma[st][i];
+		// 初始化vis数组
+		memset(vis, 0, sizeof vis);
+		vis[st] = 1;
+		
+		Dijk();
+		cout << (dis[ed] == INF ? -1 : dis[ed]) << endl;
+	
+	return 0;
+}
