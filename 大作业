@@ -1,0 +1,36 @@
+#include<stdio.h>
+int n=5,k=2,ans=10000;
+int count[100];
+int t[100]={1,5,2,10,3};
+int copmare(){
+	int tmp=0;
+	for(int i=0; i<k; i++)
+		if(count[i]>tmp)
+			tmp=count[i];
+	return tmp;
+}
+void search(int dis,int *count,int *t){
+	if(dis==n) {
+		int tmp=copmare();
+		if(tmp<ans)
+			ans=tmp;
+		return;
+	}
+	for(int i=0; i<k; i++) {
+		count[i]+=t[dis];
+		if(count[i]<ans)
+			search(dis+1,count,t);
+		count[i]-=t[dis];
+	}
+}
+int main(){
+	int i;
+	for (i=0; i<k; i++)
+		count[i]=0;
+	search(0,count,t);
+	printf("%d\n",ans);
+	return 0;
+}
+
+
+//
