@@ -1,0 +1,54 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define maxSize 1000
+#define maxNum  100000000
+int dp[maxSize][maxSize];//从i到j相乘所需要的最少计算次数 
+int memeo[maxSize][maxSize];//储存从i到j在哪里截断 
+void find(int *numSequence,int n){
+	int i,j,k,l,tmp;
+	for(i=0;i<=n;i++){
+		dp[i][i]=0;//长度为1时0次计算 
+		memeo[i][i]=i;
+	}
+	for(l=2;l<=n;l++){//遍历长度从2到n 
+		for(i=1;i<=n-l+1;i++){
+			j=i+l-1;
+			dp[i][j]=maxNum;
+			for(k=i;k<j;k++){//在k处截断，分成i~k，k+1~j，两部分 
+				tmp=dp[i][k]+dp[k+1][j]+numSequence[i-1]*numSequence[k]*numSequence[j];
+				if(tmp<dp[i][j]){
+					dp[i][j]=tmp,memeo[i][j]=k; 
+				}
+			}
+		}
+	}
+	
+	
+}
+void print(int start,int end){//递归输出最优方案 
+	if(start==end){
+		printf("A%d",start);
+	}
+	else{
+		printf("(");
+		print(start,memeo[start][end]);
+		print(memeo[start][end]+1,end);
+		printf(")");
+		
+	}
+}
+
+int main(){
+int numSequence[maxSize],n,i;
+scanf("%d",&n);
+for(i=0;i<=n;i++){
+	scanf("%d",&numSequence[i]);
+}
+find(numSequence,n);
+printf("%d\n",dp[1][n]);
+print(1,n);
+return 0;
+ 
+
+
+}
